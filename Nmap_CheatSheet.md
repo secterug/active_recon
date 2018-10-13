@@ -276,7 +276,7 @@ Spoof MAC Address
 Send bad checksums
 	nmap –badsum [IP]
 
-Output
+## Output
 Save output to a text file
 	nmap -oN [scan.txt] [IP]
 
@@ -289,7 +289,7 @@ Grepable output
 Output all supported file types
 	nmap -oA [path/filename] [IP
 
-Comparing Scan Results
+## Comparing Scan Results
 Comparison using Ndiff 
 	ndiff [scan1.xml] [scan2.xml]
 
@@ -322,3 +322,40 @@ external
 intrusive
 malware
 safe
+
+## Putting it together
+# Nmap verbose scan, runs syn stealth, T4 timing (should be ok on LAN), OS and service version info, traceroute and scripts against services
+nmap -v -sS -A -T4 target
+
+# As above but scans all TCP ports (takes a lot longer)
+nmap -v -sS -p- -A -T4 target
+
+# As above but scans all TCP ports and UDP scan (takes even longer)
+nmap -v -sU -sS -p- -A -T4 target
+
+# Search nmap scripts for keywords
+ls /usr/share/nmap/scripts/* | grep ftp
+
+# Nmap script to scan for vulnerable SMB servers - WARNING: unsafe=1 may cause knockover
+nmap -v -p 445 --script=smb-check-vulns --script-args=unsafe=1 target
+
+## run three Nmap scans to identify accessible hosts
+nmap –T4 –Pn –n –sS –F –oG tcp.gnmap 192.168.0.0/24
+nmap –T4 –Pn –n –sY –F –oG sctp.gnmap 192.168.0.0/24
+nmap –T4 –Pn –n –sU –p53,69,111,123,137,161,500,514,520 -oG  udp.gnmap 192.168.0.0/24
+
+## use grep and awk to generate a refined list of targets
+grep open *.gnmap | awk '{print $2}' | sort | uniq > targets.txt
+
+## feed this list into four subsequent scans
+1. A fast TCP scan of common services
+nmap -T4 -Pn -open -sS -A -oA tcp_fast -iL targets.txt
+
+2. A TCP scan of all ports (plus fingerprinting and testing via default NSE scripts)
+nmap -T4 -Pn -open -sSVC -A –p0-65535 -oA tcp_full -iL targets.txt
+
+3. An SCTP scan of all ports
+nmap -T4 -Pn -open -sY –p0-65535 -oA sctp -iL targets.txt
+
+4. A UDP scan of common services
+nmap -T3 -Pn -open –sU -oA udp -iL targets.txt
