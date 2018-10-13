@@ -232,121 +232,127 @@
 * [30 Nmap Command Examples - http://www.cyberciti.biz/networking/nmap-command-examples-tutorials/](http://www.cyberciti.biz/networking/nmap-command-examples-tutorials/)
 
 
-Handy Examples:
-Nmap Basics:
+## Handy Examples:
 
-Scan a single target
+### Nmap Basics:
+
+* Scan a single target
 	nmap [IP]
 
-Scan multiple IPs
+* Scan multiple IPs
 	nmap [IP1,IP2,IP3…]
 
-Scan a list
+* Scan a list
 	nmap -iL [list.txt]
 
-Scan a range of hosts
+* Scan a range of hosts
 	nmap [10.1.1.1-10.1.1.200]
 
-Scan an entire subnet
+* Scan an entire subnet
 	nmap [IP address/cdir]
 
-Excluding targets from a scan
+* Excluding targets from a scan
 	nmap [IP] –exclude [IP]
 
-Excluding targets using a list
+* Excluding targets using a list
 	nmap [IPs] –excludefile [list.txt]
 
-Create a list of hosts scanned
+* Create a list of hosts scanned
   	nmap -sL [IPs
 
-     Evasion
-Fragment packets
+## Evasion
+
+* Fragment packets
 	nmap -f [IP]
 
-Specify a specific MTU
+* Specify a specific MTU
 	nmap –mtu [MTU] [IP]
 
-Append random data
+* Append random data
 	nmap –data-length [size] [IP]
 
-Spoof MAC Address
+* Spoof MAC Address
 	nmap –spoof-mac [MAC|0|vendor] [IP]
 
-Send bad checksums
+* Send bad checksums
 	nmap –badsum [IP]
 
 ## Output
-Save output to a text file
+
+* Save output to a text file
 	nmap -oN [scan.txt] [IP]
 
-Save output to a xml file
+* Save output to a xml file
 	nmap -oX [scan.xml] [IP]
 
-Grepable output
+* Grepable output
 	nmap -oG [scan.txt] [IP]
 
-Output all supported file types
+* Output all supported file types
 	nmap -oA [path/filename] [IP
 
 ## Comparing Scan Results
-Comparison using Ndiff 
+
+* Comparison using Ndiff 
 	ndiff [scan1.xml] [scan2.xml]
 
-Ndiff verbose mode
+* Ndiff verbose mode
 	ndiff -v [scan1.xml] [scan2.xml]
 
-XML output mode 
+* XML output mode 
 	ndiff –xml [scan1.xm] [scan2.xml]]
 
-Nmap Scripting Engine
+* Nmap Scripting Engine
 
-Execute individual NSE scripts
+* Execute individual NSE scripts
 	nmap –script [script.nse] [IP]
 
-Execute multiple NSE scripts
+* Execute multiple NSE scripts
 	nmap –script [script1.nse,script2.nse…] [IP]
 
-Execute NSE scripts by category
+* Execute NSE scripts by category
 	nmap –script [cat] [target]
 
-Execute multiple NSE script categories
+* Execute multiple NSE script categories
 	nmap –script [auth, default…] [IP]
 
-NSE Script categories:
-all 
-auth
-default
-discovery
-external
-intrusive
-malware
-safe
+## NSE Script categories:
+
+* all 
+* auth
+* default
+* discovery
+* external
+* intrusive
+* malware
+* safe
 
 ## Putting it together
-# Nmap verbose scan, runs syn stealth, T4 timing (should be ok on LAN), OS and service version info, traceroute and scripts against services
-nmap -v -sS -A -T4 target
 
-# As above but scans all TCP ports (takes a lot longer)
-nmap -v -sS -p- -A -T4 target
+### Nmap verbose scan, runs syn stealth, T4 timing (should be ok on LAN), OS and service version info, traceroute and scripts against services
+* nmap -v -sS -A -T4 target
 
-# As above but scans all TCP ports and UDP scan (takes even longer)
-nmap -v -sU -sS -p- -A -T4 target
+### As above but scans all TCP ports (takes a lot longer)
+* nmap -v -sS -p- -A -T4 target
 
-# Search nmap scripts for keywords
-ls /usr/share/nmap/scripts/* | grep ftp
+### As above but scans all TCP ports and UDP scan (takes even longer)
+* nmap -v -sU -sS -p- -A -T4 target
 
-# Nmap script to scan for vulnerable SMB servers - WARNING: unsafe=1 may cause knockover
-nmap -v -p 445 --script=smb-check-vulns --script-args=unsafe=1 target
+### Search nmap scripts for keywords
+* ls /usr/share/nmap/scripts/* | grep ftp
 
-## run three Nmap scans to identify accessible hosts
-nmap –T4 –Pn –n –sS –F –oG tcp.gnmap 192.168.0.0/24
-nmap –T4 –Pn –n –sY –F –oG sctp.gnmap 192.168.0.0/24
-nmap –T4 –Pn –n –sU –p53,69,111,123,137,161,500,514,520 -oG  udp.gnmap 192.168.0.0/24
+### Nmap script to scan for vulnerable SMB servers - WARNING: unsafe=1 may cause knockover
+* nmap -v -p 445 --script=smb-check-vulns --script-args=unsafe=1 target
 
-## use grep and awk to generate a refined list of targets
-grep open *.gnmap | awk '{print $2}' | sort | uniq > targets.txt
+### Run three Nmap scans to identify accessible hosts
+* nmap –T4 –Pn –n –sS –F –oG tcp.gnmap 192.168.0.0/24
+* nmap –T4 –Pn –n –sY –F –oG sctp.gnmap 192.168.0.0/24
+* nmap –T4 –Pn –n –sU –p53,69,111,123,137,161,500,514,520 -oG  udp.gnmap 192.168.0.0/24
 
-## feed this list into four subsequent scans
+### Use grep and awk to generate a refined list of targets
+* grep open *.gnmap | awk '{print $2}' | sort | uniq > targets.txt
+
+### feed this list into four subsequent scans
 1. A fast TCP scan of common services
 nmap -T4 -Pn -open -sS -A -oA tcp_fast -iL targets.txt
 
