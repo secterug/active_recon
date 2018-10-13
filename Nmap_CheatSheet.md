@@ -232,7 +232,6 @@
 * [30 Nmap Command Examples - http://www.cyberciti.biz/networking/nmap-command-examples-tutorials/](http://www.cyberciti.biz/networking/nmap-command-examples-tutorials/)
 
 
-```
 Handy Examples:
 Nmap Basics:
 
